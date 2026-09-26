@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>214nb 服务器 - 官网</title>
+  <style>
+    :root {
+      --primary: #4ade80;
+      --primary-dark: #22c55e;
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* 顶部导航 */
+    nav {
+      position: sticky; top: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 100;
+    }
+    .logo { font-size: 1.4rem; font-weight: bold; background: linear-gradient(90deg, #4ade80, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links a { margin-left: 24px; color: var(--text-muted); transition: color 0.2s; font-size: 0.95rem; }
+    .nav-links a:hover { color: var(--primary); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* Hero 区域 */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 120px 20px 100px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(74,222,128,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 16px; letter-spacing: 2px; position: relative; }
+    .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 32px; position: relative; }
+    .btn-group { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; }
+    .btn {
+      padding: 12px 28px; border-radius: 10px; font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: none;
+      display: inline-flex; align-items: center; gap: 8px; font-size: 1rem;
+    }
+    .btn-primary { background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: #052e16; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4); }
+    .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+
+    /* 通用区块 */
+    .section { margin-bottom: 80px; }
+    .section-title { font-size: 1.8rem; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .section-title::before { content: ''; display: block; width: 6px; height: 28px; background: var(--primary); border-radius: 3px; }
+
+    /* 状态卡片 */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; transition: transform 0.3s, border-color 0.3s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+    .card-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+    .card-value { font-size: 2rem; font-weight: 700; }
+
+    /* 公告 */
+    .notice-list { display: flex; flex-direction: column; gap: 16px; }
+    .notice {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; display: flex; gap: 20px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .notice:hover { border-color: var(--primary); }
+    .notice-date { color: var(--primary); font-weight: bold; font-size: 0.9rem; white-space: nowrap; }
+    .notice-content h3 { font-size: 1.1rem; margin-bottom: 6px; }
+    .notice-content p { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* 特色功能卡片 */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; text-align: center; transition: transform 0.3s, border-color 0.3s;
+    }
+    .feature-card:hover { transform: translateY(-4px); border-color: var(--primary); }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .feature-card h3 { margin-bottom: 10px; }
+    .feature-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+    /* FAQ 折叠面板 */
+    .faq-item {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    }
+    .faq-question {
+      padding: 18px 24px; font-weight: 600; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.2s;
+    }
+    .faq-question:hover { background: rgba(255,255,255,0.03); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+      padding: 0 24px; color: var(--text-muted); font-size: 0.95rem;
+    }
+    .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 18px; }
+    .faq-item.open .faq-question { color: var(--primary); }
+
+    /* 底部 */
+    footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); }
+    footer .footer-links a { margin: 0 12px; color: var(--text-muted); }
+    footer .footer-links a:hover { color: var(--primary); }
+
+    @media (max-width: 768px) {
+      .status-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
+      nav { flex-direction: column; gap: 10px; padding: 16px; }
+      .nav-links a { margin: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <nav>
+    <div class="logo">214nb 服务器</div>
+    <div class="nav-links">
+      <a href="#home">首页</a>
+      <a href="#news">公告</a>
+      <a href="#download">下载</a>
+      <a href="#apply">白名单</a>
+      <a href="#feedback">反馈</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </nav>
+
+  <!-- Hero 区域 -->
+  <section class="hero" id="home">
+    <h1>欢迎来到 214nb</h1>
+    <p>一个充满无限可能的 Minecraft 世界，期待你的加入</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyAddr()">📋 复制服务器地址</button>
+      <!-- 替换 href 为你的整合包直链 -->
+      <a href="#" class="btn btn-outline">⬇️ 下载整合包</a>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- 状态区域 -->
+    <section class="section">
+      <div class="status-grid">
+        <div class="card">
+          <div class="card-title">服务器状态</div>
+          <div class="card-value" id="status">查询中...</div>
+        </div>
+        <div class="card">
+          <div class="card-title">当前在线玩家</div>
+          <div class="card-value" id="players">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 公告区域 -->
+    <section class="section" id="news">
+      <h2 class="section-title">📢 服务器公告</h2>
+      <div class="notice-list" id="notice-list">
+        <!-- 公告会自动从 script 里生成的 newsData 渲染出来 -->
+      </div>
+    </section>
+
+    <!-- 特色功能介绍 -->
+    <section class="section">
+      <h2 class="section-title">✨ 服务器特色</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚔️</div>
+          <h3>丰富玩法</h3>
+          <p>多种模组和玩法，从生存到冒险，总有一款适合你。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>稳定防熊</h3>
+          <p>完善的防熊系统和权限管理，让你安心游戏。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>高性能</h3>
+          <p>优化后的服务端配置，低延迟、不卡顿。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 快捷入口（下载 / 申请 / 反馈） -->
+    <section class="section">
+      <h2 class="section-title">🧭 快捷入口</h2>
+      <div class="feature-grid">
+        <div class="feature-card" id="download">
+          <div class="feature-icon">📦</div>
+          <h3>整合包下载</h3>
+          <p>获取最新版服务器整合包，包含所有模组和配置</p>
+          <!-- 把下面 href 替换成你的整合包直链 -->
+          <a href="#" class="btn btn-primary">前往下载</a>
+        </div>
+        <div class="feature-card" id="apply">
+          <div class="feature-icon">📝</div>
+          <h3>白名单申请</h3>
+          <p>提交申请加入服务器，审核通过后即可进入</p>
+          <!-- 把下面 href 替换成你的白名单申请表单链接 -->
+          <a href="#" class="btn btn-primary" target="_blank">提交申请</a>
+        </div>
+        <div class="feature-card" id="feedback">
+          <div class="feature-icon">💬</div>
+          <h3>问题反馈</h3>
+          <p>遇到 Bug 或有建议？在这里告诉我们</p>
+          <!-- 把下面 href 替换成你的问题反馈表单链接 -->
+          <a href="#" class="btn btn-primary" target="_blank">提交反馈</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <h2 class="section-title">❓ 常见问题</h2>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">怎么进入服务器？<span>+</span></div>
+        <div class="faq-answer">在 Minecraft Java 版客户端中输入服务器地址 <b>214nb.cc.cd</b> 即可进入。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">需要下载整合包吗？<span>+</span></div>
+        <div class="faq-answer">是的，建议下载最新版整合包，避免模组版本不一致导致无法进入。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">怎么申请白名单？<span>+</span></div>
+        <div class="faq-answer">点击上方“白名单申请”，填写表单提交，管理员审核通过后即可进入。</div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#home">首页</a>
+      <a href="#news">公告</a>
+      <a href="#download">下载</a>
+      <a href="#apply">白名单</a>
+      <a href="#feedback">反馈</a>
+    </div>
+    <p style="margin-top: 16px;">© 2026 214nb 服务器 · Powered by GitHub Pages</p>
+  </footer>
+
+  <script>
+    /* ============ 公告数据 ============
+       以后你想改公告，只要改下面这个数组就行。
+       每一条公告格式：
+       { date: "日期", title: "标题", content: "内容" }
+    */
+    const newsData = [
+      { date: "2026-09-26", title: "服务器正式上线！", content: "欢迎来到 214nb 服务器，全新版本已开放，欢迎各位玩家体验。" },
+      { date: "2026-09-20", title: "整合包更新至 v1.2", content: "本次更新优化了模组兼容性，并新增了若干优化模组。" }
+    ];
+
+    // 渲染公告
+    const noticeList = document.getElementById('notice-list');
+    newsData.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'notice';
+      div.innerHTML = `
+        <div class="notice-date">${item.date}</div>
+        <div class="notice-content">
+          <h3>${item.title}</h3>
+          <p>${item.content}</p>
+        </div>
+      `;
+      noticeList.appendChild(div);
+    });
+
+    /* ============ 服务器状态 ============ */
+    fetch('https://api.mcsrvstat.us/3/om.rainplay.cn:47411')
+      .then(res => res.json())
+      .then(data => {
+        const statusEl = document.getElementById('status');
+        const playersEl = document.getElementById('players');
+        if (data.online) {
+          statusEl.innerHTML = '<span style="color: #4ade80;">🟢 在线</span>';
+          playersEl.textContent = data.players.online + ' / ' + data.players.max;
+        } else {
+          statusEl.innerHTML = '<span style="color: #f87171;">🔴 离线</span>';
+          playersEl.textContent = '—';
+        }
+      })
+      .catch(() => {
+        document.getElementById('status').innerHTML = '<span style="color: #f87171;">⚠️ 查询失败</span>';
+      });
+
+    /* ============ 复制地址 ============ */
+    function copyAddr() {
+      navigator.clipboard.writeText('214nb.cc.cd');
+      alert('服务器地址已复制：214nb.cc.cd');
+    }
+
+    /* ============ FAQ 折叠 ============ */
+    function toggleFaq(el) {
+      const item = el.parentElement;
+      item.classList.toggle('open');
+      const icon = el.querySelector('span');
+      icon.textContent = item.classList.contains('open') ? '−' : '+';
+    }
+  </script>
+</body>
+</html>
